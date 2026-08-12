@@ -1,4 +1,4 @@
-# 👻 GhostThumbs
+# 👻 GhostThumbs 🥑
 
 🌐 **[Read in English](README.md)**
 
@@ -90,4 +90,4 @@ Licencia MIT — consulta [LICENSE](LICENSE) para más detalles.
 
 ---
 
-*Creado por la frustración con Microsoft por no resolver esto por sí mismos. 👻*
+*Creado por la frustración con Microsoft por no resolver esto por sí mismos. 👻🥑*

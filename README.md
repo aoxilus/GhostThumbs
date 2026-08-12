@@ -1,4 +1,4 @@
-# 👻 GhostThumbs
+# 👻 GhostThumbs 🥑
 
 🌐 **[Leer en Español](README.es.md)**
 
@@ -90,4 +90,4 @@ Found a bug? Have an idea? Open an issue or submit a PR!
 
 ---
 
-*Made with frustration at Microsoft for not solving this themselves. 👻*
+*Made with frustration at Microsoft for not solving this themselves. 👻🥑*

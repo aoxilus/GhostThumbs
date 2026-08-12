@@ -108,8 +108,8 @@ function Write-Banner {
      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═════╝ ╚══════╝
 "@
     Write-Host $ghost -ForegroundColor Magenta
-    Write-Host "  v$VERSION — See cloud files. Keep your space." -ForegroundColor DarkGray
-    Write-Host "  Ver archivos en la nube. Conserva tu espacio." -ForegroundColor DarkGray
+    Write-Host "  v$VERSION — See cloud files. Keep your space. 🥑" -ForegroundColor DarkGray
+    Write-Host "  Ver archivos en la nube. Conserva tu espacio. 🥑" -ForegroundColor DarkGray
     Write-Host ""
 }
 
