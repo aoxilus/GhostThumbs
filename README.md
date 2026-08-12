@@ -1,5 +1,7 @@
 # 👻 GhostThumbs
 
+🌐 **[Leer en Español](README.es.md)**
+
 **See thumbnails for cloud-only files — without downloading them.**
 
 GhostThumbs solves the **#1 complaint** about cloud storage on Windows: *"Why can't I see thumbnails for my cloud-only files?"*

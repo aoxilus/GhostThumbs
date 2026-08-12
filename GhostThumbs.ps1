@@ -1,44 +1,58 @@
 <#
 .SYNOPSIS
     GhostThumbs — See thumbnails for cloud-only files without downloading them.
+    GhostThumbs — Ver miniaturas de archivos en la nube sin descargarlos.
 
 .DESCRIPTION
-    Solves the #1 complaint about cloud storage on Windows:
-    "Why can't I see thumbnails for my cloud-only files?"
+    [EN] Solves the #1 complaint about cloud storage on Windows:
+         "Why can't I see thumbnails for my cloud-only files?"
+         GhostThumbs temporarily downloads each image, forces Windows to cache 
+         its thumbnail, then immediately frees the space — giving you visual 
+         previews of files that only exist in the cloud.
 
-    GhostThumbs temporarily downloads each image, forces Windows to cache 
-    its thumbnail, then immediately frees the space — giving you visual 
-    previews of files that only exist in the cloud.
+    [ES] Resuelve la queja #1 sobre almacenamiento en la nube en Windows:
+         "¿Por qué no puedo ver las miniaturas de mis archivos en la nube?"
+         GhostThumbs descarga temporalmente cada imagen, obliga a Windows a 
+         guardar la miniatura en caché, y luego libera el espacio inmediatamente
+         — dándote vistas previas de archivos que solo existen en la nube.
 
-    Works with Dropbox Smart Sync, OneDrive Files On-Demand, Google Drive 
-    Streaming, and any cloud provider using the Windows Cloud Files API.
+    Works with / Funciona con: Dropbox Smart Sync, OneDrive Files On-Demand, 
+    Google Drive Streaming, and any cloud provider using the Windows Cloud Files API.
 
 .PARAMETER FolderPath
-    The folder to process. If not specified, auto-detects cloud folders.
+    [EN] The folder to process. If not specified, auto-detects cloud folders.
+    [ES] La carpeta a procesar. Si no se especifica, detecta carpetas en la nube automáticamente.
 
 .PARAMETER Recurse
-    Process subfolders recursively.
+    [EN] Process subfolders recursively.
+    [ES] Procesar subcarpetas de forma recursiva.
 
 .PARAMETER BatchSize
-    Number of files to process per batch. Default: 10
+    [EN] Number of files to process per batch. Default: 10
+    [ES] Número de archivos a procesar por lote. Predeterminado: 10
 
 .PARAMETER AutoDetect
-    Automatically find and process all cloud storage folders.
+    [EN] Automatically find and process all cloud storage folders.
+    [ES] Buscar y procesar automáticamente todas las carpetas de almacenamiento en la nube.
 
 .PARAMETER Silent
-    Minimal output — only shows summary at the end.
+    [EN] Minimal output — only shows summary at the end.
+    [ES] Salida mínima — solo muestra el resumen al final.
 
 .EXAMPLE
     .\GhostThumbs.ps1
-    # Auto-detects and processes all cloud folders
+    # [EN] Auto-detects and processes all cloud folders
+    # [ES] Detecta y procesa automáticamente todas las carpetas en la nube
 
 .EXAMPLE
     .\GhostThumbs.ps1 -FolderPath "C:\Users\you\Dropbox"
-    # Processes a specific folder
+    # [EN] Processes a specific folder
+    # [ES] Procesa una carpeta específica
 
 .EXAMPLE
     .\GhostThumbs.ps1 -FolderPath "C:\Users\you\OneDrive" -Recurse
-    # Processes a folder and all subfolders
+    # [EN] Processes a folder and all subfolders
+    # [ES] Procesa una carpeta y todas sus subcarpetas
 
 .LINK
     https://github.com/aoxilus/GhostThumbs
@@ -54,23 +68,26 @@ param(
 )
 
 # ════════════════════════════════════════════════════════════════════
-#  CONFIG
+#  CONFIG / CONFIGURACIÓN
 # ════════════════════════════════════════════════════════════════════
 
 $VERSION = "1.0.0"
 
+# Supported image formats / Formatos de imagen soportados
 $IMAGE_EXTENSIONS = @(
     '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp',
     '.tiff', '.tif', '.ico', '.heic', '.heif', '.avif',
     '.jfif', '.svg', '.raw', '.cr2', '.nef', '.arw'
 )
 
-$OFFLINE_FLAG  = 0x1000   # FILE_ATTRIBUTE_OFFLINE
-$SPARSE_FLAG   = 0x200    # FILE_ATTRIBUTE_SPARSE_FILE
-$REPARSE_FLAG  = 0x400    # FILE_ATTRIBUTE_REPARSE_POINT
+# Windows file attributes that mark cloud-only files
+# Atributos de archivo de Windows que indican archivos solo en la nube
+$OFFLINE_FLAG  = 0x1000   # FILE_ATTRIBUTE_OFFLINE  — file content is not on disk / contenido no está en disco
+$SPARSE_FLAG   = 0x200    # FILE_ATTRIBUTE_SPARSE   — file is a hollow placeholder / archivo es un placeholder vacío
+$REPARSE_FLAG  = 0x400    # FILE_ATTRIBUTE_REPARSE  — file is a cloud redirect / archivo es una redirección a la nube
 
 # ════════════════════════════════════════════════════════════════════
-#  DISPLAY HELPERS
+#  DISPLAY HELPERS / FUNCIONES DE PANTALLA
 # ════════════════════════════════════════════════════════════════════
 
 function Write-Banner {
@@ -92,6 +109,7 @@ function Write-Banner {
 "@
     Write-Host $ghost -ForegroundColor Magenta
     Write-Host "  v$VERSION — See cloud files. Keep your space." -ForegroundColor DarkGray
+    Write-Host "  Ver archivos en la nube. Conserva tu espacio." -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -129,13 +147,14 @@ function Write-ProgressBar {
 }
 
 # ════════════════════════════════════════════════════════════════════
-#  CORE FUNCTIONS
+#  CORE FUNCTIONS / FUNCIONES PRINCIPALES
 # ════════════════════════════════════════════════════════════════════
 
 function Test-IsCloudOnly {
     param([System.IO.FileInfo]$File)
     $attrs = [int]$File.Attributes
-    # File is cloud-only if it has the Offline flag, OR if it's Sparse + ReparsePoint
+    # [EN] File is cloud-only if it has the Offline flag, OR if it's Sparse + ReparsePoint
+    # [ES] El archivo es solo-nube si tiene el flag Offline, O si es Sparse + ReparsePoint
     return (($attrs -band $OFFLINE_FLAG) -ne 0) -or 
            (($attrs -band $SPARSE_FLAG) -ne 0 -and ($attrs -band $REPARSE_FLAG) -ne 0)
 }
@@ -143,7 +162,8 @@ function Test-IsCloudOnly {
 function Find-CloudFolders {
     <#
     .SYNOPSIS
-        Auto-detects common cloud storage folders on the system.
+        [EN] Auto-detects common cloud storage folders on the system.
+        [ES] Detecta automáticamente las carpetas de almacenamiento en la nube del sistema.
     #>
     $found = @()
     $userProfile = $env:USERPROFILE
@@ -198,10 +218,14 @@ function Find-CloudFolders {
 function Invoke-ThumbnailCache {
     <#
     .SYNOPSIS
-        Forces Windows to generate and cache a thumbnail for the given file.
-        Uses two methods for maximum reliability:
-        1. Shell COM — triggers Explorer's thumbnail pipeline
-        2. .NET System.Drawing — exercises the Windows Imaging Component
+        [EN] Forces Windows to generate and cache a thumbnail for the given file.
+             Uses two methods for maximum reliability:
+             1. Shell COM — triggers Explorer's thumbnail pipeline
+             2. .NET System.Drawing — exercises the Windows Imaging Component
+        [ES] Obliga a Windows a generar y guardar en caché la miniatura del archivo.
+             Usa dos métodos para máxima confiabilidad:
+             1. Shell COM — activa el pipeline de miniaturas del Explorer
+             2. .NET System.Drawing — ejercita el Windows Imaging Component
     #>
     param([string]$FilePath, [byte[]]$FileBytes)
 
