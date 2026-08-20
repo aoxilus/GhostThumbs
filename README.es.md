@@ -90,4 +90,4 @@ Licencia MIT — consulta [LICENSE](LICENSE) para más detalles.
 
 ---
 
-*Creado por la frustración con Microsoft por no resolver esto por sí mismos. 👻🥑*
+*Hecho con 🥑 por [aoxilus](https://github.com/aoxilus)*

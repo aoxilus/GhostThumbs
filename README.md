@@ -90,4 +90,4 @@ Found a bug? Have an idea? Open an issue or submit a PR!
 
 ---
 
-*Made with frustration at Microsoft for not solving this themselves. 👻🥑*
+*Made with 🥑 by [aoxilus](https://github.com/aoxilus)*
