@@ -82,7 +82,7 @@ R: Sí. GhostThumbs solo lee archivos — nunca modifica, mueve ni elimina nada.
 
 ## 📄 Licencia
 
-Licencia MIT — consulta [LICENSE](LICENSE) para más detalles.
+CC BY-NC-SA 4.0 — consulta [LICENSE](LICENSE).
 
 ## 🤝 Contribuciones
 

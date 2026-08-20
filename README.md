@@ -82,7 +82,7 @@ A: Yes. GhostThumbs only reads files — it never modifies, moves, or deletes an
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+CC BY-NC-SA 4.0 — see [LICENSE](LICENSE).
 
 ## 🤝 Contributing
 
